@@ -5,7 +5,9 @@ import core.BaseTest;
 import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +15,9 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BarrigaTest extends BaseTest {
     Faker faker = new Faker();
-
     private String TOKEN;
     private Map<String, String> nome = new HashMap<>();
 
@@ -41,7 +43,7 @@ public class BarrigaTest extends BaseTest {
     }
 
     @Test
-    public void naoDeveAcessarAPISemToken(){
+    public void t01_naoDeveAcessarAPISemToken(){
         given()
         .when()
             .get("/contas")
@@ -51,7 +53,7 @@ public class BarrigaTest extends BaseTest {
     }
 
     @Test
-    public void deveIncluirContaComSucesso(){
+    public void t02_deveIncluirContaComSucesso(){
 
         given()
             .header("Authorization", "JWT " + TOKEN )
@@ -66,7 +68,7 @@ public class BarrigaTest extends BaseTest {
     }
 
     @Test
-    public void deveAlterarContaComSucesso(){
+    public void t03_deveAlterarContaComSucesso(){
         given()
             .header("Authorization", "JWT " + TOKEN )
             .body(nome)
