@@ -19,13 +19,15 @@ import static org.hamcrest.Matchers.is;
 public class BarrigaTest extends BaseTest {
     Faker faker = new Faker();
     private String TOKEN;
-    private Map<String, String> nome = new HashMap<>();
+    //private Map<String, String> nome = new HashMap<>();
+    private static String CONTA_NAME;
+    private static Integer CONTA_ID;
 
     @Before
     public void before(){
         Map<String, String> login = new HashMap<>();
 
-        nome.put("nome",faker.name().fullName());
+        CONTA_NAME = faker.name().fullName();
 
         login.put("email", "wagner@aquino");
         login.put("senha", "123456");
@@ -54,30 +56,35 @@ public class BarrigaTest extends BaseTest {
 
     @Test
     public void t02_deveIncluirContaComSucesso(){
-
-        given()
+        CONTA_ID = given()
             .header("Authorization", "JWT " + TOKEN )
-            .body(nome)
+            .body("{\n" +
+                    "    \"nome\": \""+CONTA_NAME+"\"\n" +
+                    "}")
         .when()
             .post("/contas")
         .then()
             .statusCode(201)
+            .extract().path("id")
         ;
 
-        System.out.println(nome);
     }
 
     @Test
     public void t03_deveAlterarContaComSucesso(){
+
         given()
             .header("Authorization", "JWT " + TOKEN )
-            .body(nome)
+            .body("{\n" +
+                    "    \"nome\": \""+CONTA_NAME+"\"\n" +
+                    "}")
+            .pathParams("id", CONTA_ID)
         .when()
-            .put("/contas/1297110")
+            .put("/contas/{id}")
         .then()
             .log().all()
             .statusCode(200)
-            .body("nome", is(nome))
+            .body("nome", is(CONTA_NAME))
         ;
     }
 
